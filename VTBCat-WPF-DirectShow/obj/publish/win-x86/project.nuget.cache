@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "dgSpecHash": "MJMnSeZPmj0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\WpfApp1.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Aentro\\.nuget\\packages\\costura.fody\\6.0.0\\costura.fody.6.0.0.nupkg.sha512",
+    "C:\\Users\\Aentro\\.nuget\\packages\\directshowlib\\1.0.0\\directshowlib.1.0.0.nupkg.sha512",
+    "C:\\Users\\Aentro\\.nuget\\packages\\fody\\6.9.1\\fody.6.9.1.nupkg.sha512",
+    "C:\\Users\\Aentro\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x86\\8.0.11\\microsoft.netcore.app.runtime.win-x86.8.0.11.nupkg.sha512",
+    "C:\\Users\\Aentro\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x86\\8.0.11\\microsoft.windowsdesktop.app.runtime.win-x86.8.0.11.nupkg.sha512",
+    "C:\\Users\\Aentro\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x86\\8.0.11\\microsoft.aspnetcore.app.runtime.win-x86.8.0.11.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "已使用“.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1”而不是项目目标框架“net8.0-windows7.0”还原包“DirectShowLib 1.0.0”。此包可能与项目不完全兼容。",
+      "libraryId": "DirectShowLib",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
+}

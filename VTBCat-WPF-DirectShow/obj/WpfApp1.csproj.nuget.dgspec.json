@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Aentro\\Desktop\\Projects\\github\\CamCapture\\VTBCat-WPF-DirectShow\\WpfApp1.csproj": {}
+    "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\WpfApp1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Aentro\\Desktop\\Projects\\github\\CamCapture\\VTBCat-WPF-DirectShow\\WpfApp1.csproj": {
+    "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\WpfApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\CamCapture\\VTBCat-WPF-DirectShow\\WpfApp1.csproj",
+        "projectUniqueName": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\WpfApp1.csproj",
         "projectName": "WpfApp1",
-        "projectPath": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\CamCapture\\VTBCat-WPF-DirectShow\\WpfApp1.csproj",
+        "projectPath": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\WpfApp1.csproj",
         "packagesPath": "C:\\Users\\Aentro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\CamCapture\\VTBCat-WPF-DirectShow\\obj\\",
+        "outputPath": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -43,7 +43,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0-windows7.0": {
@@ -53,17 +54,9 @@
               "target": "Package",
               "version": "[1.0.0, )"
             },
-            "Emgu.CV": {
+            "Hardcodet.NotifyIcon.Wpf": {
               "target": "Package",
-              "version": "[4.9.0.5494, )"
-            },
-            "Emgu.CV.runtime.windows": {
-              "target": "Package",
-              "version": "[4.9.0.5494, )"
-            },
-            "SharpDX.MediaFoundation": {
-              "target": "Package",
-              "version": "[4.2.0, )"
+              "version": "[2.0.1, )"
             }
           },
           "imports": [

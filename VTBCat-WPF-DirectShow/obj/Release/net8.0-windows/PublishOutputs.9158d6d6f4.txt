@@ -1,0 +1,6 @@
+C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Release\net8.0-windows\publish\WpfApp1.exe
+C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Release\net8.0-windows\publish\WpfApp1.dll
+C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Release\net8.0-windows\publish\WpfApp1.runtimeconfig.json
+C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Release\net8.0-windows\publish\WpfApp1.pdb
+C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Release\net8.0-windows\publish\DirectShowLib.dll
+C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Release\net8.0-windows\publish\WpfApp1.deps.json

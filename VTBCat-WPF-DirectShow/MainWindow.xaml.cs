@@ -1,34 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Emgu.CV;
-using Emgu.CV.Structure;
+using System.Drawing;
 using DirectShowLib;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Windows.Media.Media3D;
 using System.Windows.Threading;
+
 
 
 namespace TransparentVideoWindow
 {
     public partial class MainWindow : Window
     {
-        private VideoCapture _capture;
         private List<string> _cameraDevicesName = new List<string>();
         private DsDevice[] _cameraDevices = null;
         private bool _isDragging = false;
-        private Point _lastMousePosition;
+        private System.Windows.Point _lastMousePosition;
         double _aspectRatio;
-
+        
         private double _frameRate = 60.0;
         
         private IFilterGraph2 _filterGraph = null;
@@ -37,17 +28,26 @@ namespace TransparentVideoWindow
         private IBaseFilter _cameraFilter = null;
         private DispatcherTimer _frameTimer;
         private int _currentDeviceIndex = 0;
-        private const int _initCameraIndex = 2;
-        
+        private int _initCameraIndex;
+
+        //form 缩放
+        private double _formSize = 1;
+        private double _originWidth,_originHeight;
+
         bool hasInited = false;
 
         public MainWindow()
         {
+            _originHeight = this.Height;
+            _originWidth = this.Width;
             InitializeComponent();
             InitializeCamera();
             GetCameraDevices();
+            _initCameraIndex = _cameraDevices.Length - 1;//默认启动最后一个摄像机
             PopulateMenuItems();
             StartCamera(_initCameraIndex);
+            //使得右键右下角托盘显现一样的菜单
+            MyNotifyIcon.ContextMenu = Menu;
             hasInited = true;
         }
 
@@ -291,6 +291,7 @@ namespace TransparentVideoWindow
                 if ((int)(this.Height * _aspectRatio) != (int)this.Width)
                 {
                     this.Width = this.Height * _aspectRatio;
+                    _originWidth = _originWidth * _aspectRatio;
                 }
                 int stride = width * 4; // 每行字节数 (BGRA32)
 
@@ -311,7 +312,7 @@ namespace TransparentVideoWindow
                     var bitmap = BitmapSource.Create(
                         width,
                         height,
-                        96, 96,
+                        192, 192,
                         PixelFormats.Bgra32, // BGRA32 格式支持透明
                         null,
                         processedBuffer,
@@ -356,10 +357,10 @@ namespace TransparentVideoWindow
                 Array.Copy(frameData, sourceOffset, flippedFrameData, targetOffset, stride);
             }
 
-            // 用翻转后的帧数据覆盖原始帧
+            // 用翻转后的帧数据覆盖原始帧(反正是为了修视频上下翻转的奇怪bug)
             Array.Copy(flippedFrameData, frameData, frameData.Length);
 
-            // Alpha 处理逻辑（如果需要模拟透明效果）
+            
             for (int i = 0; i < frameData.Length; i += 4)
             {
                 byte blue = frameData[i + 0];
@@ -367,7 +368,7 @@ namespace TransparentVideoWindow
                 byte red = frameData[i + 2];
                 byte alpha = frameData[i + 3]; // ARGB格式中的Alpha
 
-                // 如果真正的 Alpha 通道不可用，可模拟处理：例如黑色背景透明
+                //剔除背景，真的找不到什么库支持VTS的虚拟摄像头又支持输入alpha通道
                 if (green == 0 && blue == 0  && red == 0)
                 {
                     frameData[i + 3] = 0; // 设置为完全透明
@@ -447,9 +448,15 @@ namespace TransparentVideoWindow
         }
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _capture?.Dispose();
             _frameTimer?.Stop();
             Application.Current.Shutdown();
+        }
+
+        private void ResizeForm(object sender,  RoutedPropertyChangedEventArgs<double> e)
+        {
+            _formSize = e.NewValue;
+            this.Width = _formSize * _originWidth;
+            this.Height = _formSize * _originHeight;
         }
     }
 }

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>WpfApp1</id>
+    <version>1.0.0</version>
+    <authors>WpfApp1</authors>
+    <description>Package Description</description>
+    <repository type="git" commit="69d1616774c81db8de976ce4030f855aea20b6aa" />
+    <dependencies>
+      <group targetFramework="net8.0-windows7.0">
+        <dependency id="DirectShowLib" version="1.0.0" exclude="Build,Analyzers" />
+        <dependency id="Emgu.CV" version="4.9.0.5494" exclude="Build,Analyzers" />
+        <dependency id="Emgu.CV.runtime.windows" version="4.9.0.5494" exclude="Build,Analyzers" />
+        <dependency id="SharpDX.MediaFoundation" version="4.2.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net8.0-windows7.0">
+        <frameworkReference name="Microsoft.WindowsDesktop.App.WPF" />
+      </group>
+    </frameworkReferences>
+  </metadata>
+  <files>
+    <file src="C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Debug\net8.0-windows\WpfApp1.runtimeconfig.json" target="lib\net8.0-windows7.0\WpfApp1.runtimeconfig.json" />
+    <file src="C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Debug\net8.0-windows\WpfApp1.dll" target="lib\net8.0-windows7.0\WpfApp1.dll" />
+  </files>
+</package>

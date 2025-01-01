@@ -1,0 +1,63 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "WpfApp1/1.0.0": {
+        "dependencies": {
+          "Costura.Fody": "6.0.0",
+          "DirectShowLib": "1.0.0",
+          "Fody": "6.9.1"
+        },
+        "runtime": {
+          "WpfApp1.dll": {}
+        }
+      },
+      "Costura.Fody/6.0.0": {
+        "dependencies": {
+          "Fody": "6.9.1"
+        }
+      },
+      "DirectShowLib/1.0.0": {
+        "runtime": {
+          "lib/DirectShowLib.dll": {
+            "assemblyVersion": "2.1.0.1599",
+            "fileVersion": "2.1.0.1599"
+          }
+        }
+      },
+      "Fody/6.9.1": {}
+    }
+  },
+  "libraries": {
+    "WpfApp1/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Costura.Fody/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3Uriu9GJABMivG0wXMJs6NQ7FNE3pylir1gZEBAWDvpii3cnrmxXnOG44MMDuIVOIk/Xhef7WZFsaCNV+py9qA==",
+      "path": "costura.fody/6.0.0",
+      "hashPath": "costura.fody.6.0.0.nupkg.sha512"
+    },
+    "DirectShowLib/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oWwOk9Lj8JIMWPsfx8bUbJ/uWhHlRKpMaU5oVf8Kl9SLMhmrnr0kXg0ebDv3oOmKxZ/D1yrmw+x7UGmgMqUxFA==",
+      "path": "directshowlib/1.0.0",
+      "hashPath": "directshowlib.1.0.0.nupkg.sha512"
+    },
+    "Fody/6.9.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Y33IOTstqsDaq2+1Cweu4s/V2iAAaRY6bPIANCre3Wlx9REc+ONyYmUdCc67Z12dy0N2Haq3t7QP4ANndsu/HA==",
+      "path": "fody/6.9.1",
+      "hashPath": "fody.6.9.1.nupkg.sha512"
+    }
+  }
+}
