@@ -7,11 +7,24 @@
       "RelativeMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|c:\\users\\aentro\\desktop\\projects\\github\\vtbcat\\vtbcat-wpf-directshow\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|solutionrelative:app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|c:\\users\\aentro\\desktop\\projects\\github\\vtbcat\\vtbcat-wpf-directshow\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|c:\\users\\aentro\\desktop\\projects\\github\\vtbcat\\vtbcat-wpf-directshow\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|solutionrelative:assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|c:\\users\\aentro\\desktop\\projects\\github\\vtbcat\\vtbcat-wpf-directshow\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Aentro\\AppData\\Local\\Temp\\.vsdbgsrc\\50ab7bdae9243e5122ba9edb32871e43129da7d00db627fba3fc17e8a1e08277\\Window.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|c:\\users\\aentro\\desktop\\projects\\github\\vtbcat\\vtbcat-wpf-directshow\\icon.ico||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{D23FC8B0-2225-4FDD-9F2E-D6D3539E2F3C}|WpfApp1.csproj|solutionrelative:icon.ico||{177559E0-D141-11D0-92DF-00A0C9138C45}"
     }
   ],
   "DocumentGroupContainers": [
@@ -20,50 +33,104 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "DockedWidth": 210,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{269a02dc-6af8-11d3-bdc4-00c04f688e50}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Window.cs",
-              "DocumentMoniker": "C:\\Users\\Aentro\\AppData\\Local\\Temp\\.vsdbgsrc\\50ab7bdae9243e5122ba9edb32871e43129da7d00db627fba3fc17e8a1e08277\\Window.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\50ab7bdae9243e5122ba9edb32871e43129da7d00db627fba3fc17e8a1e08277\\Window.cs",
-              "ToolTip": "C:\\Users\\Aentro\\AppData\\Local\\Temp\\.vsdbgsrc\\50ab7bdae9243e5122ba9edb32871e43129da7d00db627fba3fc17e8a1e08277\\Window.cs [\u53EA\u8BFB]",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\50ab7bdae9243e5122ba9edb32871e43129da7d00db627fba3fc17e8a1e08277\\Window.cs [\u53EA\u8BFB]",
-              "ViewState": "AgIAAKcNAAAAAAAAAAAqwLwNAAADAAAAAQAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-01T12:35:10.626Z",
-              "EditorCaption": " [\u53EA\u8BFB]"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\MainWindow.xaml.cs*",
-              "RelativeToolTip": "MainWindow.xaml.cs*",
-              "ViewState": "AgIAACIAAAAAAAAAAAAswC4AAAAgAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAADwvzYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-01T11:28:00.658Z",
+              "WhenOpened": "2025-01-01T15:21:33.097Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\App.xaml.cs",
+              "RelativeDocumentMoniker": "App.xaml.cs",
+              "ToolTip": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\App.xaml.cs",
+              "RelativeToolTip": "App.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-01T15:21:28.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\App.xaml",
+              "RelativeDocumentMoniker": "App.xaml",
+              "ToolTip": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\App.xaml",
+              "RelativeToolTip": "App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-01-01T15:21:27.27Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "AssemblyInfo.cs",
+              "ToolTip": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\AssemblyInfo.cs",
+              "RelativeToolTip": "AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-01T15:21:23.396Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
               "ToolTip": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\MainWindow.xaml",
               "RelativeToolTip": "MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-12-31T01:36:11.269Z",
+              "WhenOpened": "2025-01-01T15:14:25.968Z",
               "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "8246d04a-424a-4a15-8f80-32f008aec954",
+        "Display": 0,
+        "X": 401,
+        "Y": 45,
+        "Width": 899,
+        "Height": 966,
+        "WindowState": 0
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "icon.ico -  [\u4E2D\u6587(\u7B80\u4F53\uFF0C\u4E2D\u56FD)] - Icon [256x256, 32 \u4F4D, BMP]",
+              "DocumentMoniker": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\icon.ico",
+              "RelativeDocumentMoniker": "icon.ico",
+              "ToolTip": "C:\\Users\\Aentro\\Desktop\\Projects\\github\\VTBCat\\VTBCat-WPF-DirectShow\\icon.ico -  [\u4E2D\u6587(\u7B80\u4F53\uFF0C\u4E2D\u56FD)] - Icon [256x256, 32 \u4F4D, BMP]",
+              "RelativeToolTip": "icon.ico -  [\u4E2D\u6587(\u7B80\u4F53\uFF0C\u4E2D\u56FD)] - Icon [256x256, 32 \u4F4D, BMP]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001525|",
+              "WhenOpened": "2025-01-01T15:09:54.014Z",
+              "EditorCaption": " -  [\u4E2D\u6587(\u7B80\u4F53\uFF0C\u4E2D\u56FD)] - Icon [256x256, 32 \u4F4D, BMP]"
             }
           ]
         }

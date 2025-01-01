@@ -18,31 +18,27 @@
                 <MenuItem Header="切换摄像头 Change Camera" Name="CameraListMenu"/>
                 <MenuItem Header="退出 Exit" Click="ExitMenuItem_Click" />
                 <MenuItem Header="帧率 Frame Rate" Name="FrameListMenu"/>
-                <StackPanel Margin="5">
-                    <TextBlock Text="放缩 Resize" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
+                <StackPanel Margin="2">
+                    <TextBlock Text="放缩 Resize" Margin="0,0,0,5"/>
                     <Slider Name="slider" 
                             IsSnapToTickEnabled="True" 
-                            TickFrequency="0.2" 
-                            Minimum="0.2" 
+                            TickFrequency="0.05" 
+                            Minimum="0.1" 
                             Maximum="3" 
                             Value="1" 
                             ValueChanged="ResizeForm" />
-                    <TextBlock Name="SliderValueText" 
-                           Text="{Binding PlacementTarget.slider.Value, RelativeSource={RelativeSource AncestorType=ContextMenu}, StringFormat=当前比例: {0:F1}x}" 
-                           HorizontalAlignment="Center" 
-                           FontSize="12" 
-                           Margin="0,5,0,0"/>
                 </StackPanel>
+                <TextBlock Text="Author: Bilibili A_回首空城" />
             </ContextMenu>
         </Grid.ContextMenu>
 
         <!-- 视频显示区域 -->
         <Image Name="VideoImage" Stretch="Fill" />
       
-
         <tb:TaskbarIcon x:Name="MyNotifyIcon"
                         Visibility="Visible"
                         ContextMenu="{Binding ElementName=Menu}"
-                        PopupActivation="LeftOrRightClick" />
+                        PopupActivation="LeftOrRightClick" 
+                        />
     </Grid>
 </Window>

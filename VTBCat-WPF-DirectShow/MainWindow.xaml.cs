@@ -7,7 +7,7 @@ using System.Drawing;
 using DirectShowLib;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
-
+using System.IO;
 
 
 namespace TransparentVideoWindow
@@ -19,9 +19,11 @@ namespace TransparentVideoWindow
         private bool _isDragging = false;
         private System.Windows.Point _lastMousePosition;
         double _aspectRatio;
-        
+        double[] _frameChoices = new[] { 1.0, 30.0, 60.0, 120.0 };//If you want more choices, add numbers here.
         private double _frameRate = 60.0;
-        
+        private MouseButtonEventArgs _LastRightClickMouseEvent;
+
+        //about camera
         private IFilterGraph2 _filterGraph = null;
         private IMediaControl _mediaControl = null;
         private ISampleGrabber _sampleGrabber = null;
@@ -30,24 +32,24 @@ namespace TransparentVideoWindow
         private int _currentDeviceIndex = 0;
         private int _initCameraIndex;
 
-        //form 缩放
+        //form 缩放比例
         private double _formSize = 1;
-        private double _originWidth,_originHeight;
+        private double _originWidth, _originHeight;
 
         bool hasInited = false;
-
+        //================================Initialize================================
         public MainWindow()
         {
-            _originHeight = this.Height;
-            _originWidth = this.Width;
             InitializeComponent();
             InitializeCamera();
+            GetIcon();
             GetCameraDevices();
             _initCameraIndex = _cameraDevices.Length - 1;//默认启动最后一个摄像机
             PopulateMenuItems();
             StartCamera(_initCameraIndex);
             //使得右键右下角托盘显现一样的菜单
             MyNotifyIcon.ContextMenu = Menu;
+            InitializeSlider();
             hasInited = true;
         }
 
@@ -74,11 +76,18 @@ namespace TransparentVideoWindow
             _frameTimer.Tick += UpdateFrame;
             _frameTimer.Start();
         }
-        
+
+        private void InitializeSlider()
+        {
+            _originHeight = this.Height;
+            _originWidth = this.Width;
+            //窗口不能大过屏幕
+            slider.Maximum = Math.Min(SystemParameters.PrimaryScreenHeight / _originHeight, SystemParameters.PrimaryScreenWidth / _originWidth);
+        }
         private void GetCameraDevices()
         {
             _cameraDevices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
-            
+
             _cameraDevicesName.Clear();
             foreach (var camera in _cameraDevices)
             {
@@ -90,7 +99,28 @@ namespace TransparentVideoWindow
                 return;
             }
         }
-        
+
+        private void GetIcon()
+        {
+            //遍历目录及其子目录中的所有文件
+            string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string[] icoFiles = Directory.GetFiles(workingDirectory, "*.ico", SearchOption.TopDirectoryOnly);
+            if (icoFiles.Length > 0)
+            {
+                try
+                {
+                    string iconPath = icoFiles[0];
+                    Icon icon = new Icon(iconPath);
+                    MyNotifyIcon.Icon = System.Drawing.Icon.FromHandle(icon.Handle);
+                    Uri iconUri = new Uri(iconPath, UriKind.Absolute);
+                    this.Icon = BitmapFrame.Create(iconUri);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading icon: {ex.Message}");
+                }
+            }
+        }
         private void PopulateMenuItems()
         {
             //Cameras
@@ -107,15 +137,15 @@ namespace TransparentVideoWindow
                     int index = (int)(sender as MenuItem).Tag;
                     foreach (var item in CameraListMenu.Items)
                     {
-                        (item as MenuItem).IsChecked = item.Equals(menuItem) ;
+                        (item as MenuItem).IsChecked = item.Equals(menuItem);
                     }
                     StartCamera(index);
                 };
                 this.CameraListMenu.Items.Add(menuItem);
             }
+
             //Frames
-            double[] FrameChoices = new[] {1.0, 30.0, 60.0, 120.0 };//If you want more choices, add numbers here.
-            foreach (double frameRate in FrameChoices)
+            foreach (double frameRate in _frameChoices)
             {
                 MenuItem menuItem = new MenuItem();
                 menuItem.Header = frameRate.ToString();
@@ -128,12 +158,14 @@ namespace TransparentVideoWindow
                     _frameRate = (double)(sender as MenuItem).Tag;
                     foreach (var item in FrameListMenu.Items)
                     {
-                        (item as MenuItem).IsChecked = item.Equals(menuItem) ;
+                        (item as MenuItem).IsChecked = item.Equals(menuItem);
                     }
                     InitializeTimer();
                 };
                 this.FrameListMenu.Items.Add(menuItem);
             }
+
+            //Color
         }
 
         private void StartCamera(int deviceIndex)
@@ -194,7 +226,7 @@ namespace TransparentVideoWindow
                 MessageBox.Show($"启动摄像头失败: {ex.Message}");
             }
         }
-
+        //================================Camera and Video================================
         /// <summary>
         /// 获取设备的过滤器并添加到过滤图
         /// </summary>
@@ -270,7 +302,7 @@ namespace TransparentVideoWindow
         {
 
             if (_sampleGrabber == null) return;
-            
+
             int bufferSize = 0;
             _sampleGrabber.GetCurrentBuffer(ref bufferSize, IntPtr.Zero);
             if (bufferSize <= 0) return;
@@ -287,11 +319,11 @@ namespace TransparentVideoWindow
                 var videoInfo = (VideoInfoHeader)Marshal.PtrToStructure(mediaType.formatPtr, typeof(VideoInfoHeader));
                 int width = videoInfo.BmiHeader.Width;
                 int height = Math.Abs(videoInfo.BmiHeader.Height); // 高度取绝对值，防止负数
-                _aspectRatio = (double)width / (double) height;
+                _aspectRatio = (double)width / (double)height;
                 if ((int)(this.Height * _aspectRatio) != (int)this.Width)
                 {
                     this.Width = this.Height * _aspectRatio;
-                    _originWidth = _originWidth * _aspectRatio;
+                    _originWidth = _originHeight * _aspectRatio;
                 }
                 int stride = width * 4; // 每行字节数 (BGRA32)
 
@@ -360,22 +392,41 @@ namespace TransparentVideoWindow
             // 用翻转后的帧数据覆盖原始帧(反正是为了修视频上下翻转的奇怪bug)
             Array.Copy(flippedFrameData, frameData, frameData.Length);
 
-            
+
             for (int i = 0; i < frameData.Length; i += 4)
             {
                 byte blue = frameData[i + 0];
                 byte green = frameData[i + 1];
                 byte red = frameData[i + 2];
                 byte alpha = frameData[i + 3]; // ARGB格式中的Alpha
-
-                //剔除背景，真的找不到什么库支持VTS的虚拟摄像头又支持输入alpha通道
-                if (green == 0 && blue == 0  && red == 0)
+                int biteBias = 12;
+                //剔除黑色背景，真的找不到什么库支持VTS的虚拟摄像头又支持输入alpha通道
+                if (green == 0 && blue == 0 && red == 0)
                 {
+                    /*//如果周围有有黑色像素才剔除
+                    if (i-biteBias >= 0)
+                    {
+                        int j = i - biteBias;
+                        if(frameData[j + 0] == 0 && frameData[j + 1] == 0 && frameData[j + 2] == 0)
+                        {
+                            frameData[i + 3] = 0; // 设置为完全透明
+                            continue;
+                        }
+                    }
+                    if (i + biteBias < frameData.Length-4)
+                    {
+                        int j = i + biteBias;
+                        if (frameData[j + 0] == 0 && frameData[j + 1] == 0 && frameData[j + 2] == 0)
+                        {
+                            frameData[i + 3] = 0; // 设置为完全透明
+                            continue;
+                        }
+                    }*/
                     frameData[i + 3] = 0; // 设置为完全透明
+                    continue;
                 }
             }
-
-        }     
+        }
         /// <summary>
         /// 停止摄像头并释放资源
         /// </summary>
@@ -406,7 +457,8 @@ namespace TransparentVideoWindow
                 _sampleGrabber = null;
             }
         }
-        
+
+        //================================About Form================================
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -422,6 +474,8 @@ namespace TransparentVideoWindow
                 ContextMenu contextMenu = this.Menu;
                 contextMenu.PlacementTarget = this;
                 contextMenu.IsOpen = true;
+                //保存右键点击事件,方便缩放
+                _LastRightClickMouseEvent = e;
             }
         }
 
@@ -452,11 +506,20 @@ namespace TransparentVideoWindow
             Application.Current.Shutdown();
         }
 
-        private void ResizeForm(object sender,  RoutedPropertyChangedEventArgs<double> e)
+        private void ResizeForm(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _formSize = e.NewValue;
-            this.Width = _formSize * _originWidth;
-            this.Height = _formSize * _originHeight;
+            //初始化时候会调用这个函数，dame，这是不行的
+            if (!hasInited) return;
+            double newScale = e.NewValue;
+            double scaleChange = newScale / _formSize;
+
+            System.Windows.Point cursorPositionBefore = _LastRightClickMouseEvent.GetPosition(this);
+            this.Left -= cursorPositionBefore.X * (scaleChange - 1);
+            this.Top -= cursorPositionBefore.Y * (scaleChange - 1);
+
+            this.Width = newScale * _originWidth;
+            this.Height = newScale * _originHeight;
+            _formSize = newScale;
         }
     }
 }

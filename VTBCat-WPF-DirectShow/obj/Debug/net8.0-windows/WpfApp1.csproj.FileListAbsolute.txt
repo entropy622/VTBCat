@@ -193,6 +193,4 @@ C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\obj\Debug\n
 C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\obj\Debug\net8.0-windows\WpfApp1.pdb
 C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\obj\Debug\net8.0-windows\WpfApp1.genruntimeconfig.cache
 C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\obj\Debug\net8.0-windows\ref\WpfApp1.dll
-C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Debug\net8.0-windows\Costura.dll
-C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\obj\Debug\net8.0-windows\WpfApp1.csproj.Fody.CopyLocal.cache
-C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\obj\Debug\net8.0-windows\WpfApp1.csproj.Fody.RuntimeCopyLocal.cache
+C:\Users\Aentro\Desktop\Projects\github\VTBCat\VTBCat-WPF-DirectShow\bin\Debug\net8.0-windows\Hardcodet.NotifyIcon.Wpf.dll
