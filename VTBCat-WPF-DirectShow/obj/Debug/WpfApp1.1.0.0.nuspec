@@ -5,13 +5,11 @@
     <version>1.0.0</version>
     <authors>WpfApp1</authors>
     <description>Package Description</description>
-    <repository type="git" commit="69d1616774c81db8de976ce4030f855aea20b6aa" />
+    <repository type="git" commit="a9eb4a6c2c70be23257448e36d0ce0e1bfa39211" />
     <dependencies>
       <group targetFramework="net8.0-windows7.0">
         <dependency id="DirectShowLib" version="1.0.0" exclude="Build,Analyzers" />
-        <dependency id="Emgu.CV" version="4.9.0.5494" exclude="Build,Analyzers" />
-        <dependency id="Emgu.CV.runtime.windows" version="4.9.0.5494" exclude="Build,Analyzers" />
-        <dependency id="SharpDX.MediaFoundation" version="4.2.0" exclude="Build,Analyzers" />
+        <dependency id="Hardcodet.NotifyIcon.Wpf" version="2.0.1" exclude="Build,Analyzers" />
       </group>
     </dependencies>
     <frameworkReferences>

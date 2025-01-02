@@ -3,11 +3,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Drawing;
 using DirectShowLib;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
-using System.IO;
+
 
 
 namespace TransparentVideoWindow
@@ -22,6 +21,19 @@ namespace TransparentVideoWindow
         double[] _frameChoices = new[] { 1.0, 30.0, 60.0, 120.0 };//If you want more choices, add numbers here.
         private double _frameRate = 60.0;
         private MouseButtonEventArgs _LastRightClickMouseEvent;
+
+        //about background removal
+        private double _backgroundRemveStrength;//From 0 to 1
+        //Ways to remove background
+        public enum BackgroundRemovalMode
+        {
+            None,              
+            RemoveBlack,       
+            RemoveGreen  
+        }
+        public BackgroundRemovalMode _backgroundRemovalMode = BackgroundRemovalMode.RemoveBlack;
+        int _frameBorderTop = -1, _frameBorderBottom = int.MaxValue, _frameBorderLeft = -1, _frameBorderRight = int.MaxValue;
+        int _frameCounter = 0; // 用于计算帧数，每一秒重置一次，方便调用DetectBorder
 
         //about camera
         private IFilterGraph2 _filterGraph = null;
@@ -42,7 +54,7 @@ namespace TransparentVideoWindow
         {
             InitializeComponent();
             InitializeCamera();
-            GetIcon();
+            //GetIcon(); //现在在xaml中完成了
             GetCameraDevices();
             _initCameraIndex = _cameraDevices.Length - 1;//默认启动最后一个摄像机
             PopulateMenuItems();
@@ -82,7 +94,7 @@ namespace TransparentVideoWindow
             _originHeight = this.Height;
             _originWidth = this.Width;
             //窗口不能大过屏幕
-            slider.Maximum = Math.Min(SystemParameters.PrimaryScreenHeight / _originHeight, SystemParameters.PrimaryScreenWidth / _originWidth);
+            Slider_FormSize.Maximum = Math.Min(SystemParameters.PrimaryScreenHeight / _originHeight, SystemParameters.PrimaryScreenWidth / _originWidth)-0.05;
         }
         private void GetCameraDevices()
         {
@@ -100,7 +112,7 @@ namespace TransparentVideoWindow
             }
         }
 
-        private void GetIcon()
+        /*private void GetIcon()
         {
             //遍历目录及其子目录中的所有文件
             string workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -112,15 +124,13 @@ namespace TransparentVideoWindow
                     string iconPath = icoFiles[0];
                     Icon icon = new Icon(iconPath);
                     MyNotifyIcon.Icon = System.Drawing.Icon.FromHandle(icon.Handle);
-                    Uri iconUri = new Uri(iconPath, UriKind.Absolute);
-                    this.Icon = BitmapFrame.Create(iconUri);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error loading icon: {ex.Message}");
                 }
             }
-        }
+        }*/
         private void PopulateMenuItems()
         {
             //Cameras
@@ -165,7 +175,25 @@ namespace TransparentVideoWindow
                 this.FrameListMenu.Items.Add(menuItem);
             }
 
-            //Color
+            //Background Removal
+            foreach (BackgroundRemovalMode mode in Enum.GetValues(typeof(BackgroundRemovalMode)))
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Header = mode.ToString();
+                menuItem.Tag = mode;
+                menuItem.IsCheckable = true;
+                menuItem.IsChecked = false;
+                if (mode == _backgroundRemovalMode) menuItem.IsChecked = true;
+                menuItem.Click += (sender, e) =>
+                {
+                    _backgroundRemovalMode = (BackgroundRemovalMode)(sender as MenuItem).Tag;
+                    foreach (var item in BRListMenu.Items)
+                    {
+                        (item as MenuItem).IsChecked = item.Equals(menuItem);
+                    }
+                };
+                this.BRListMenu.Items.Add(menuItem);
+            }
         }
 
         private void StartCamera(int deviceIndex)
@@ -307,6 +335,12 @@ namespace TransparentVideoWindow
             _sampleGrabber.GetCurrentBuffer(ref bufferSize, IntPtr.Zero);
             if (bufferSize <= 0) return;
 
+            _frameCounter++;
+            if(_frameCounter> _frameRate)
+            {
+                _frameCounter = 0;
+            }
+
             IntPtr buffer = Marshal.AllocCoTaskMem(bufferSize);
             try
             {
@@ -331,8 +365,13 @@ namespace TransparentVideoWindow
                 byte[] frameData = new byte[bufferSize];
                 Marshal.Copy(buffer, frameData, 0, bufferSize);
 
+                //每5帧检测一次，节省性能
+                if (_frameCounter%5 == 0)
+                {
+                    DetectBorder(frameData, stride);
+                }
                 // 对帧进行 Alpha 模拟处理
-                ProcessFrameAlpha(frameData, width, height, stride);
+                ProcessFrame(frameData, width, height, stride);
 
                 // 转换回 IntPtr，用于 BitmapSource 创建
                 IntPtr processedBuffer = Marshal.AllocCoTaskMem(bufferSize);
@@ -368,12 +407,10 @@ namespace TransparentVideoWindow
         }
 
         /// <summary>
-        /// 处理帧数据，支持透明像素
+        /// 处理帧数据
         /// </summary>
-        private void ProcessFrameAlpha(byte[] frameData, int width, int height, int stride)
+        private void ProcessFrame(byte[] frameData, int width, int height, int stride)
         {
-            int bytesPerPixel = 4; // 每像素字节数 (BGRA)
-
             byte[] flippedFrameData = new byte[frameData.Length]; // 用于保存翻转后的帧
 
             // 从底部向上复制像素行
@@ -381,51 +418,157 @@ namespace TransparentVideoWindow
             {
                 // 原始帧数据的起始偏移
                 int sourceOffset = y * stride;
-
                 // 翻转后帧数据的目标偏移
                 int targetOffset = (height - y - 1) * stride;
-
                 // 复制该行字节数据
                 Array.Copy(frameData, sourceOffset, flippedFrameData, targetOffset, stride);
             }
 
             // 用翻转后的帧数据覆盖原始帧(反正是为了修视频上下翻转的奇怪bug)
             Array.Copy(flippedFrameData, frameData, frameData.Length);
+            RemoveBackGround(frameData,stride);
+        }
+        private void RemoveBackGround(byte[] frameData,int stride)
+        {
+            if (_backgroundRemovalMode == BackgroundRemovalMode.None) return;
 
+            //去除黑色边框
+            RemoveBorder(frameData,stride);
 
             for (int i = 0; i < frameData.Length; i += 4)
             {
                 byte blue = frameData[i + 0];
                 byte green = frameData[i + 1];
                 byte red = frameData[i + 2];
-                byte alpha = frameData[i + 3]; // ARGB格式中的Alpha
-                int biteBias = 12;
-                //剔除黑色背景，真的找不到什么库支持VTS的虚拟摄像头又支持输入alpha通道
-                if (green == 0 && blue == 0 && red == 0)
-                {
-                    /*//如果周围有有黑色像素才剔除
-                    if (i-biteBias >= 0)
+
+                //有点hack的方法，但是效果还不错
+                //主要是检测周围像素是否是纯正的背景，如果是，那么就降低这个像素判断为背景的标准
+                //这样可以很好的防止误判
+                int biteBias = 12;//偏移biteBias/4个像素检测
+                int num_nearPixelIsBlack = 0;//周围是纯正背景的像素个数
+                foreach (int dir in new int[]{1,-1}) {
+                    int j = i + dir * biteBias;
+                    if (j >= 0 && j < frameData.Length-4)
                     {
-                        int j = i - biteBias;
-                        if(frameData[j + 0] == 0 && frameData[j + 1] == 0 && frameData[j + 2] == 0)
+                        if (IsBackground(frameData[j + 0], frameData[j + 1] , frameData[j + 2] ,0))
                         {
-                            frameData[i + 3] = 0; // 设置为完全透明
-                            continue;
+                            num_nearPixelIsBlack++;
                         }
                     }
-                    if (i + biteBias < frameData.Length-4)
-                    {
-                        int j = i + biteBias;
-                        if (frameData[j + 0] == 0 && frameData[j + 1] == 0 && frameData[j + 2] == 0)
-                        {
-                            frameData[i + 3] = 0; // 设置为完全透明
-                            continue;
-                        }
-                    }*/
+                }
+                int sumOfColor = green + blue + red;
+                if (IsBackground(red, green, blue, (int)(num_nearPixelIsBlack * 250 * _backgroundRemveStrength)))
+                {
                     frameData[i + 3] = 0; // 设置为完全透明
                     continue;
                 }
             }
+        }
+        private void DetectBorder(byte[] frameData, int stride)
+        {
+            if (_backgroundRemovalMode == BackgroundRemovalMode.RemoveBlack) return;
+            // 检测并去除黑色边框
+            int width = stride / 4; // 每行的像素数
+            int height = frameData.Length / stride; // 总高度
+
+            // 检测顶部边框
+            for (int y = 0; y < height; y++)
+            {
+                bool isBlackRow = true;
+                for (int x = 0; x < width; x++)
+                {
+                    int index = (y * stride) + (x * 4);
+                    if (frameData[index + 0] + frameData[index + 1] + frameData[index + 2] != 0)
+                    {
+                        isBlackRow = false;
+                        break;
+                    }
+                }
+                if (isBlackRow) _frameBorderTop = y; else break;
+            }
+
+            // 检测底部边框
+            for (int y = height - 1; y >= 0; y--)
+            {
+                bool isBlackRow = true;
+                for (int x = 0; x < width; x++)
+                {
+                    int index = (y * stride) + (x * 4);
+                    if (frameData[index + 0] + frameData[index + 1] + frameData[index + 2] != 0)
+                    {
+                        isBlackRow = false;
+                        break;
+                    }
+                }
+                if (isBlackRow) _frameBorderBottom = y; else break;
+            }
+
+            // 检测左边框
+            for (int x = 0; x < width; x++)
+            {
+                bool isBlackColumn = true;
+                for (int y = 0; y < height; y++)
+                {
+                    int index = (y * stride) + (x * 4);
+                    if (frameData[index + 0] + frameData[index + 1] + frameData[index + 2] != 0)
+                    {
+                        isBlackColumn = false;
+                        break;
+                    }
+                }
+                if (isBlackColumn) _frameBorderLeft = x; else break;
+            }
+
+            // 检测右边框
+            for (int x = width - 1; x >= 0; x--)
+            {
+                bool isBlackColumn = true;
+                for (int y = 0; y < height; y++)
+                {
+                    int index = (y * stride) + (x * 4);
+                    if (frameData[index + 0] + frameData[index + 1] + frameData[index + 2] != 0)
+                    {
+                        isBlackColumn = false;
+                        break;
+                    }
+                }
+                if (isBlackColumn) _frameBorderRight = x; else break;
+            }
+        }
+        private void RemoveBorder(byte[] frameData, int stride)
+        {
+            if (_backgroundRemovalMode == BackgroundRemovalMode.RemoveBlack) return;
+            // 检测并去除黑色边框
+            int width = stride / 4; // 每行的像素数
+            int height = frameData.Length / stride; // 总高度
+            // 设置边框像素为透明
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (y <= _frameBorderTop || y >= _frameBorderBottom || x <= _frameBorderLeft || x >= _frameBorderRight)
+                    {
+                        int index = (y * stride) + (x * 4);
+                        frameData[index + 3] = 0; // 设置为完全透明
+                    }
+                }
+            }
+        }
+        private bool IsBackground(byte red, byte green, byte blue,int bias)
+        {
+            switch (_backgroundRemovalMode)
+            {
+                case BackgroundRemovalMode.None:
+                    return false;
+                case BackgroundRemovalMode.RemoveBlack:
+                    return red + green + blue <= bias;
+                case BackgroundRemovalMode.RemoveGreen:
+                    //这些数据是我试出来的（
+                    return green >= 254 - _backgroundRemveStrength * 200 &&
+                           red <= Math.Max(0, green - 180 + _backgroundRemveStrength * 150) && 
+                           blue <= Math.Max(0, green - 180) + _backgroundRemveStrength * 150;
+            }
+            return false;
         }
         /// <summary>
         /// 停止摄像头并释放资源
@@ -458,7 +601,7 @@ namespace TransparentVideoWindow
             }
         }
 
-        //================================About Form================================
+        //================================About Form and Click and Menu================================
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -510,16 +653,32 @@ namespace TransparentVideoWindow
         {
             //初始化时候会调用这个函数，dame，这是不行的
             if (!hasInited) return;
-            double newScale = e.NewValue;
-            double scaleChange = newScale / _formSize;
 
-            System.Windows.Point cursorPositionBefore = _LastRightClickMouseEvent.GetPosition(this);
-            this.Left -= cursorPositionBefore.X * (scaleChange - 1);
-            this.Top -= cursorPositionBefore.Y * (scaleChange - 1);
+            if (_originHeight == 0 || _originWidth == 0)
+            {
+                MessageBox.Show("Initailized Height or Width is 0! That may lead the form to disapear");
+            }
+            try
+            {
+                double newScale = e.NewValue;
+                double scaleChange = newScale / _formSize;
 
-            this.Width = newScale * _originWidth;
-            this.Height = newScale * _originHeight;
-            _formSize = newScale;
+                System.Windows.Point cursorPositionBefore = _LastRightClickMouseEvent.GetPosition(this);
+                this.Left -= cursorPositionBefore.X * (scaleChange - 1);
+                this.Top -= cursorPositionBefore.Y * (scaleChange - 1);
+
+                this.Width = newScale * _originWidth;
+                this.Height = newScale * _originHeight;
+                _formSize = newScale;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Resize Error! {ex.ToString}");
+            }
+        }
+        private void ChangeBRStrength(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _backgroundRemveStrength = e.NewValue;
         }
     }
 }

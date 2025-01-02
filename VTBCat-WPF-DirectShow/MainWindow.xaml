@@ -20,13 +20,24 @@
                 <MenuItem Header="帧率 Frame Rate" Name="FrameListMenu"/>
                 <StackPanel Margin="2">
                     <TextBlock Text="放缩 Resize" Margin="0,0,0,5"/>
-                    <Slider Name="slider" 
+                    <Slider Name="Slider_FormSize" Width="200"
                             IsSnapToTickEnabled="True" 
                             TickFrequency="0.05" 
                             Minimum="0.1" 
                             Maximum="3" 
                             Value="1" 
                             ValueChanged="ResizeForm" />
+                </StackPanel>
+                <MenuItem Header="背景去除模式 Background Removal Mode" Name="BRListMenu" />
+                <StackPanel Margin="2">
+                    <TextBlock Text="背景去除强度 Background Remove Strength" Margin="0,0,0,5"/>
+                    <Slider Name="Slider_BR" Width="200"
+                                IsSnapToTickEnabled="True" 
+                                TickFrequency="0.01" 
+                                Minimum="0" 
+                                Maximum="1" 
+                                Value="0.2" 
+                                ValueChanged="ChangeBRStrength" />
                 </StackPanel>
                 <TextBlock Text="Author: Bilibili A_回首空城" />
             </ContextMenu>
@@ -39,6 +50,7 @@
                         Visibility="Visible"
                         ContextMenu="{Binding ElementName=Menu}"
                         PopupActivation="LeftOrRightClick" 
+                        IconSource="icon.ico"
                         />
     </Grid>
 </Window>
