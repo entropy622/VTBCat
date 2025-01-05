@@ -40,6 +40,7 @@
                                 ValueChanged="ChangeBRStrength" />
                 </StackPanel>
                 <TextBlock Text="Author: Bilibili A_回首空城" />
+                <TextBlock Name="FrameCounter"  Text="Author: Bilibili A_回首空城" />
             </ContextMenu>
         </Grid.ContextMenu>
 

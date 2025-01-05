@@ -18,9 +18,10 @@ namespace TransparentVideoWindow
         private bool _isDragging = false;
         private System.Windows.Point _lastMousePosition;
         double _aspectRatio;
-        double[] _frameChoices = new[] { 1.0, 30.0, 60.0, 120.0 };//If you want more choices, add numbers here.
-        private double _frameRate = 60.0;
+        double[] _frameChoices = new[] { 1.0, 30.0, 60.0, 120.0,360.0};//If you want more choices, add numbers here.
+        private double _frameRate = 120.0;
         private MouseButtonEventArgs _LastRightClickMouseEvent;
+
 
         //about background removal
         private double _backgroundRemveStrength;//From 0 to 1
@@ -41,6 +42,7 @@ namespace TransparentVideoWindow
         private ISampleGrabber _sampleGrabber = null;
         private IBaseFilter _cameraFilter = null;
         private DispatcherTimer _frameTimer;
+        DispatcherTimer _showFrameCounter;
         private int _currentDeviceIndex = 0;
         private int _initCameraIndex;
 
@@ -87,8 +89,21 @@ namespace TransparentVideoWindow
             };
             _frameTimer.Tick += UpdateFrame;
             _frameTimer.Start();
-        }
 
+            _showFrameCounter?.Stop();
+            _showFrameCounter = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1000.0)
+            };
+            _showFrameCounter.Tick += ShowFrameRate;
+            _showFrameCounter.Start();
+        }
+        //Test
+        private void ShowFrameRate(object sender, EventArgs e)
+        {
+            FrameCounter.Text = "FrameRate: " + _frameCounter;
+            _frameCounter = 0;
+        }
         private void InitializeSlider()
         {
             _originHeight = this.Height;
