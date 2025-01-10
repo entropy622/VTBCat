@@ -19,7 +19,7 @@ namespace TransparentVideoWindow
         private System.Windows.Point _lastMousePosition;
         double _aspectRatio;
         double[] _frameChoices = new[] { 1.0, 30.0, 60.0, 120.0,360.0};//If you want more choices, add numbers here.
-        private double _frameRate = 120.0;
+        private double _frameRate = 60.0;
         private MouseButtonEventArgs _LastRightClickMouseEvent;
 
 
@@ -45,6 +45,8 @@ namespace TransparentVideoWindow
         DispatcherTimer _showFrameCounter;
         private int _currentDeviceIndex = 0;
         private int _initCameraIndex;
+        //private byte[] _frameAfterProcess = null;
+        private Queue<byte[]> _frameQueue = new Queue<byte[]>();
 
         //form 缩放比例
         private double _formSize = 1;
@@ -90,20 +92,20 @@ namespace TransparentVideoWindow
             _frameTimer.Tick += UpdateFrame;
             _frameTimer.Start();
 
-            _showFrameCounter?.Stop();
+            /*_showFrameCounter?.Stop();
             _showFrameCounter = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(1000.0)
             };
             _showFrameCounter.Tick += ShowFrameRate;
-            _showFrameCounter.Start();
+            _showFrameCounter.Start();*/
         }
         //Test
-        private void ShowFrameRate(object sender, EventArgs e)
+        /*private void ShowFrameRate(object sender, EventArgs e)
         {
             FrameCounter.Text = "FrameRate: " + _frameCounter;
             _frameCounter = 0;
-        }
+        }*/
         private void InitializeSlider()
         {
             _originHeight = this.Height;
@@ -343,7 +345,6 @@ namespace TransparentVideoWindow
         /// </summary>
         private void UpdateFrame(object sender, EventArgs e)
         {
-
             if (_sampleGrabber == null) return;
 
             int bufferSize = 0;
@@ -364,7 +365,6 @@ namespace TransparentVideoWindow
                 // 获取媒体类型信息
                 AMMediaType mediaType = new AMMediaType();
                 _sampleGrabber.GetConnectedMediaType(mediaType);
-
                 var videoInfo = (VideoInfoHeader)Marshal.PtrToStructure(mediaType.formatPtr, typeof(VideoInfoHeader));
                 int width = videoInfo.BmiHeader.Width;
                 int height = Math.Abs(videoInfo.BmiHeader.Height); // 高度取绝对值，防止负数
@@ -375,24 +375,30 @@ namespace TransparentVideoWindow
                     _originWidth = _originHeight * _aspectRatio;
                 }
                 int stride = width * 4; // 每行字节数 (BGRA32)
-
-                // 将缓冲区从 IntPtr 转换为 byte[]
+                                        // 将缓冲区从 IntPtr 转换为 byte[]
                 byte[] frameData = new byte[bufferSize];
                 Marshal.Copy(buffer, frameData, 0, bufferSize);
 
-                //每5帧检测一次，节省性能
-                if (_frameCounter%5 == 0)
-                {
-                    DetectBorder(frameData, stride);
-                }
                 // 对帧进行 Alpha 模拟处理
-                ProcessFrame(frameData, width, height, stride);
+                if (_frameQueue.Count <= 1)
+                {
+                    //并行化处理帧
+                    Task.Run(() => {
+                        //每5帧检测一次边缘，节省性能
+                        if (_frameCounter % 5 == 0)
+                        {
+                            DetectBorder(frameData, stride);
+                        }
+                        ProcessFrame(frameData, width, height, stride);
+                        });
+                }
 
+                if (_frameQueue.Count == 0) { return; }
                 // 转换回 IntPtr，用于 BitmapSource 创建
                 IntPtr processedBuffer = Marshal.AllocCoTaskMem(bufferSize);
                 try
                 {
-                    Marshal.Copy(frameData, 0, processedBuffer, bufferSize);
+                    Marshal.Copy(_frameQueue.Dequeue(), 0, processedBuffer, bufferSize);
 
                     // 使用 BitmapSource 创建可渲染图片
                     var bitmap = BitmapSource.Create(
@@ -418,7 +424,6 @@ namespace TransparentVideoWindow
             {
                 Marshal.FreeCoTaskMem(buffer);
             }
-
         }
 
         /// <summary>
@@ -426,7 +431,7 @@ namespace TransparentVideoWindow
         /// </summary>
         private void ProcessFrame(byte[] frameData, int width, int height, int stride)
         {
-            byte[] flippedFrameData = new byte[frameData.Length]; // 用于保存翻转后的帧
+            byte[] frameAfterProcess = new byte[frameData.Length]; 
 
             // 从底部向上复制像素行
             for (int y = 0; y < height; y++)
@@ -436,12 +441,13 @@ namespace TransparentVideoWindow
                 // 翻转后帧数据的目标偏移
                 int targetOffset = (height - y - 1) * stride;
                 // 复制该行字节数据
-                Array.Copy(frameData, sourceOffset, flippedFrameData, targetOffset, stride);
+                Array.Copy(frameData, sourceOffset, frameAfterProcess, targetOffset, stride);
             }
 
             // 用翻转后的帧数据覆盖原始帧(反正是为了修视频上下翻转的奇怪bug)
-            Array.Copy(flippedFrameData, frameData, frameData.Length);
-            RemoveBackGround(frameData,stride);
+            //Array.Copy(flippedFrameData, frameData, frameData.Length);
+            RemoveBackGround(frameAfterProcess,stride);
+            _frameQueue.Enqueue(frameAfterProcess);
         }
         private void RemoveBackGround(byte[] frameData,int stride)
         {

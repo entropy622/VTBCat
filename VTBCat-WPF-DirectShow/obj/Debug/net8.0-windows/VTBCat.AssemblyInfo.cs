@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VTBCat")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a9eb4a6c2c70be23257448e36d0ce0e1bfa39211")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+335602144ac0c1d7aabddd7063f4638680a672dd")]
 [assembly: System.Reflection.AssemblyProductAttribute("VTBCat")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VTBCat")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
